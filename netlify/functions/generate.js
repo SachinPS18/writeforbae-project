@@ -38,13 +38,15 @@ Generate a paragraph with the following:
 
     if (userContext) userQuery += `\n- Context to consider: "${userContext}"`;
 
+    // ✅ Payload with only valid role "user"
     const payload = {
       contents: [
         { role: "user", parts: [{ text: userQuery }] }
       ]
     };
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/google/gemini-2.5-pro-exp-03-25:generateContent?key=${GOOGLE_API_KEY}`;
+    // ✅ Use Gemini 1.5 (available to all accounts)
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5:generateContent?key=${GOOGLE_API_KEY}`;
 
     const response = await fetch(apiUrl, {
       method: "POST",
