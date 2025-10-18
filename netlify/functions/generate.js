@@ -1,10 +1,8 @@
-// ✅ Import fetch (CommonJS for Netlify)
 const fetch = require("node-fetch");
 
 exports.handler = async function (event, context) {
   try {
     const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
-
     if (!GOOGLE_API_KEY) {
       return {
         statusCode: 500,
@@ -25,7 +23,7 @@ exports.handler = async function (event, context) {
     const systemPrompt = `
 You are WriteForBae, an AI specialized in crafting perfectly personalized, Gen Z-style messages.
 Tone: relatable, emotionally intelligent, expert in modern slang.
-Rules: Never use asterisks for emphasis. Use emojis (1-3) naturally. Avoid hashtags or formal sign-offs.
+Rules: Never use asterisks for emphasis. Use 1-3 emojis naturally.
 `;
 
     let userQuery = `Generate a paragraph with the following:
@@ -38,18 +36,14 @@ Rules: Never use asterisks for emphasis. Use emojis (1-3) naturally. Avoid hasht
 
     if (userContext) userQuery += `\n- Context to consider: "${userContext}"`;
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${GOOGLE_API_KEY}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateText?key=${GOOGLE_API_KEY}`;
 
-    // ✅ Correct Gemini API payload
+    // ✅ Correct Gemini 2.5 Pro payload
     const payload = {
-      prompt: {
-        messages: [
-          { author: "system", content: [{ type: "text", text: systemPrompt }] },
-          { author: "user", content: [{ type: "text", text: userQuery }] }
-        ]
-      },
-      temperature: 0.7,
-      candidate_count: 1
+      input: [
+        { author: "system", content: [{ type: "text", text: systemPrompt }] },
+        { author: "user", content: [{ type: "text", text: userQuery }] }
+      ]
     };
 
     const response = await fetch(apiUrl, {
@@ -61,7 +55,6 @@ Rules: Never use asterisks for emphasis. Use emojis (1-3) naturally. Avoid hasht
     const result = await response.json();
 
     if (!response.ok) {
-      // Return the full API response as a string for the frontend
       console.error("Google AI API Error:", result);
       return {
         statusCode: response.status,
@@ -69,14 +62,7 @@ Rules: Never use asterisks for emphasis. Use emojis (1-3) naturally. Avoid hasht
       };
     }
 
-    // Safely extract the generated text
-    const generatedText = result?.candidates?.[0]?.content?.[0]?.text;
-    if (!generatedText) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ text: "No text was generated. Try again." }),
-      };
-    }
+    const generatedText = result?.candidates?.[0]?.content?.[0]?.text || "No text generated.";
 
     return {
       statusCode: 200,
@@ -91,3 +77,4 @@ Rules: Never use asterisks for emphasis. Use emojis (1-3) naturally. Avoid hasht
     };
   }
 };
+
