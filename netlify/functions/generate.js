@@ -1,3 +1,4 @@
+// ✅ Import fetch (CommonJS for Netlify)
 const fetch = require("node-fetch");
 
 exports.handler = async function (event, context) {
@@ -24,7 +25,7 @@ exports.handler = async function (event, context) {
     const systemPrompt = `
 You are WriteForBae, an AI specialized in crafting perfectly personalized, Gen Z-style messages.
 Tone: relatable, emotionally intelligent, expert in modern slang.
-Rules: Never use asterisks for emphasis. Use emojis (1-3) naturally. Avoid hashtags or formal sign-offs.
+Rules: Never use asterisks for emphasis. Use 1-3 emojis naturally. Avoid hashtags or formal sign-offs.
 `;
 
     let userQuery = `Generate a paragraph with the following:
@@ -37,19 +38,15 @@ Rules: Never use asterisks for emphasis. Use emojis (1-3) naturally. Avoid hasht
 
     if (userContext) userQuery += `\n- Context to consider: "${userContext}"`;
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${GOOGLE_API_KEY}`;
-
+    // ✅ Correct Gemini 2.5 Pro payload: system + user messages separated
     const payload = {
       contents: [
-        {
-          parts: [
-            { text: systemPrompt },
-            { text: userQuery }
-          ],
-          role: "user"
-        }
+        { role: "system", parts: [{ text: systemPrompt }] },
+        { role: "user", parts: [{ text: userQuery }] }
       ]
     };
+
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${GOOGLE_API_KEY}`;
 
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -63,11 +60,15 @@ Rules: Never use asterisks for emphasis. Use emojis (1-3) naturally. Avoid hasht
       console.error("Google AI API Error:", result);
       return {
         statusCode: response.status,
-        body: JSON.stringify({ error: result.error || "Failed to get a response from the AI service." }),
+        body: JSON.stringify({ error: JSON.stringify(result) }),
       };
     }
 
-    const generatedText = result?.candidates?.[0]?.content?.[0]?.text || "No response generated.";
+    // ✅ Safely extract the generated text
+    const generatedText =
+      result?.candidates?.[0]?.content?.[0]?.text ||
+      result?.candidates?.[0]?.output?.[0]?.content?.[0]?.text ||
+      "No response generated.";
 
     return {
       statusCode: 200,
@@ -78,7 +79,7 @@ Rules: Never use asterisks for emphasis. Use emojis (1-3) naturally. Avoid hasht
     console.error("Error in Netlify function:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "An internal server error occurred." }),
+      body: JSON.stringify({ error: error.message || "An internal server error occurred." }),
     };
   }
 };
