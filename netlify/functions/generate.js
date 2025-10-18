@@ -3,6 +3,7 @@ const fetch = require("node-fetch");
 exports.handler = async function (event, context) {
   try {
     const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+
     if (!GOOGLE_API_KEY) {
       return {
         statusCode: 500,
@@ -23,7 +24,7 @@ exports.handler = async function (event, context) {
     const systemPrompt = `
 You are WriteForBae, an AI specialized in crafting perfectly personalized, Gen Z-style messages.
 Tone: relatable, emotionally intelligent, expert in modern slang.
-Rules: Never use asterisks for emphasis. Use 1-3 emojis naturally.
+Rules: Never use asterisks for emphasis. Use emojis (1-3) naturally. Avoid hashtags or formal sign-offs.
 `;
 
     let userQuery = `Generate a paragraph with the following:
@@ -36,13 +37,17 @@ Rules: Never use asterisks for emphasis. Use 1-3 emojis naturally.
 
     if (userContext) userQuery += `\n- Context to consider: "${userContext}"`;
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateText?key=${GOOGLE_API_KEY}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${GOOGLE_API_KEY}`;
 
-    // ✅ Correct Gemini 2.5 Pro payload
     const payload = {
-      input: [
-        { author: "system", content: [{ type: "text", text: systemPrompt }] },
-        { author: "user", content: [{ type: "text", text: userQuery }] }
+      contents: [
+        {
+          parts: [
+            { text: systemPrompt },
+            { text: userQuery }
+          ],
+          role: "user"
+        }
       ]
     };
 
@@ -58,11 +63,11 @@ Rules: Never use asterisks for emphasis. Use 1-3 emojis naturally.
       console.error("Google AI API Error:", result);
       return {
         statusCode: response.status,
-        body: JSON.stringify({ error: JSON.stringify(result) }),
+        body: JSON.stringify({ error: result.error || "Failed to get a response from the AI service." }),
       };
     }
 
-    const generatedText = result?.candidates?.[0]?.content?.[0]?.text || "No text generated.";
+    const generatedText = result?.candidates?.[0]?.content?.[0]?.text || "No response generated.";
 
     return {
       statusCode: 200,
@@ -73,8 +78,7 @@ Rules: Never use asterisks for emphasis. Use 1-3 emojis naturally.
     console.error("Error in Netlify function:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message || "An internal server error occurred." }),
+      body: JSON.stringify({ error: "An internal server error occurred." }),
     };
   }
 };
-
