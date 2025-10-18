@@ -1,4 +1,3 @@
-// ✅ Import fetch (CommonJS for Netlify)
 const fetch = require("node-fetch");
 
 exports.handler = async function (event, context) {
@@ -28,7 +27,8 @@ Tone: relatable, emotionally intelligent, expert in modern slang.
 Rules: Never use asterisks for emphasis. Use 1-3 emojis naturally. Avoid hashtags or formal sign-offs.
 `;
 
-    let userQuery = `Generate a paragraph with the following:
+    let userQuery = `${systemPrompt}
+Generate a paragraph with the following:
 - Main Vibe: ${vibe}
 - Specific Vibe: ${subVibe}
 - Writing Dynamic: ${dynamic}
@@ -38,10 +38,9 @@ Rules: Never use asterisks for emphasis. Use 1-3 emojis naturally. Avoid hashtag
 
     if (userContext) userQuery += `\n- Context to consider: "${userContext}"`;
 
-    // ✅ Correct Gemini 2.5 Pro payload: system + user messages separated
+    // ✅ Payload with only valid roles: "user"
     const payload = {
       contents: [
-        { role: "system", parts: [{ text: systemPrompt }] },
         { role: "user", parts: [{ text: userQuery }] }
       ]
     };
@@ -64,7 +63,6 @@ Rules: Never use asterisks for emphasis. Use 1-3 emojis naturally. Avoid hashtag
       };
     }
 
-    // ✅ Safely extract the generated text
     const generatedText =
       result?.candidates?.[0]?.content?.[0]?.text ||
       result?.candidates?.[0]?.output?.[0]?.content?.[0]?.text ||
@@ -83,3 +81,4 @@ Rules: Never use asterisks for emphasis. Use 1-3 emojis naturally. Avoid hashtag
     };
   }
 };
+
