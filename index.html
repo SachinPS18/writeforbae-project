@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WriteForBae: The Ultimate Gen Z Paragraph Writer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fce4ec; /* Soft pink background */
+            background-image:
+                radial-gradient(at 40% 20%, hsla(28,100%,74%,1) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, hsla(189,100%,56%,1) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, hsla(355,100%,93%,1) 0px, transparent 50%),
+                radial-gradient(at 80% 50%, hsla(340,100%,76%,1) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, hsla(22,100%,77%,1) 0px, transparent 50%),
+                radial-gradient(at 80% 100%, hsla(242,100%,70%,1) 0px, transparent 50%),
+                radial-gradient(at 0% 0%, hsla(343,100%,76%,1) 0px, transparent 50%);
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+
+        .main-container {
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 24px;
+            border: 1px solid rgba(209, 213, 219, 0.3);
+        }
+
+        .control-label {
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .custom-select, .custom-textarea, .custom-input {
+            background-color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(209, 213, 219, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .custom-select:focus, .custom-textarea:focus, .custom-input:focus {
+            background-color: white;
+            border-color: #f472b6;
+            box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.3);
+            outline: none;
+        }
+        
+        .slider-track {
+            background: rgba(255, 255, 255, 0.7);
+        }
+        
+        .slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #ec4899;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        input[type='range']::-webkit-slider-thumb {
+             -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #ec4899;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: -7px;
+        }
+
+        input[type='range']::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #ec4899;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+
+        .btn-generate {
+            background: linear-gradient(45deg, #ec4899, #f472b6, #f9a8d4);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5);
+        }
+
+        .output-card {
+            background-color: rgba(255, 255, 255, 0.7);
+            min-height: 200px;
+        }
+        
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FFF;
+            border-bottom-color: #FF3D00;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .copy-toast {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateY(20px);
+        }
+
+        .copy-toast.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex items-center justify-center">
+
+    <div class="main-container w-full max-w-6xl mx-auto p-6 md:p-10 shadow-2xl">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800">WriteFor<span class="text-pink-500">Bae</span></h1>
+            <p class="text-gray-600 mt-2 text-lg">The Ultimate Gen Z Paragraph Writer 💕</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+            <!-- Controls Column -->
+            <div class="flex flex-col gap-6">
+                <!-- Access Code Removed - App is now public! -->
+                <div>
+                    <label for="vibe" class="control-label">What's the vibe?</label>
+                    <select id="vibe" class="custom-select w-full p-3 rounded-lg text-gray-700">
+                        <option value="tareef">✨ Tareef (Compliment)</option>
+                        <option value="gussa">😡 Gussa (Anger)</option>
+                        <option value="pyar" selected>❤️ Pyar (Love)</option>
+                        <option value="masti">😂 Masti (Fun/Funny)</option>
+                        <option value="motivational">💪 Motivational</option>
+                        <option value="teasing">😜 Teasing</option>
+                        <option value="sorry">🙏 Sorry/Apology</option>
+                        <option value="encouragement">🤗 Encouragement</option>
+                        <option value="sad">😢 Sad/Empathy</option>
+                        <option value="sarcasm">😏 Playful Sarcasm</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="sub-vibe" class="control-label">Drill down the vibe</label>
+                    <select id="sub-vibe" class="custom-select w-full p-3 rounded-lg text-gray-700">
+                        <!-- Options will be populated by JS -->
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="dynamic" class="control-label">Who's writing to whom?</label>
+                    <select id="dynamic" class="custom-select w-full p-3 rounded-lg text-gray-700">
+                        <option value="girl-to-boy">👩 -> 👦 Girl to Boy</option>
+                        <option value="boy-to-girl">👦 -> 👩 Boy to Girl</option>
+                        <option value="same-gender">🧑‍🤝‍🧑 Same Gender</option>
+                        <option value="neutral">💬 Neutral / Group</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="language" class="control-label">Language Style</label>
+                    <select id="language" class="custom-select w-full p-3 rounded-lg text-gray-700">
+                        <option value="english">🇬🇧 English</option>
+                        <option value="hinglish">🇮🇳 Hinglish (Hindi + English)</option>
+                        <option value="spanglish">🇪🇸 Spanglish (Spanish + English)</option>
+                        <option value="hindi">🇮🇳 Hindi (in Roman script)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="context" class="control-label">Add some context (optional)</label>
+                    <textarea id="context" rows="3" class="custom-textarea w-full p-3 rounded-lg text-gray-700" placeholder="e.g., We just had a cute little argument about pineapple on pizza..."></textarea>
+                </div>
+
+                <!-- Customization Panel -->
+                <div class="bg-white/60 p-4 rounded-xl space-y-4">
+                     <div>
+                        <label for="length" class="control-label flex justify-between"><span>Length:</span> <span id="length-value" class="font-normal text-pink-600">Medium</span></label>
+                        <input type="range" id="length" min="1" max="3" value="2" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-track">
+                    </div>
+                     <div>
+                        <label for="intensity" class="control-label flex justify-between"><span>Tone Intensity:</span> <span id="intensity-value" class="font-normal text-pink-600">Normal</span></label>
+                        <input type="range" id="intensity" min="1" max="3" value="2" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-track">
+                    </div>
+                </div>
+
+                <button id="generate-btn" class="btn-generate w-full text-white font-bold py-4 px-4 rounded-lg text-xl flex items-center justify-center gap-2">
+                    <span>✨</span>
+                    <span>Generate Paragraph</span>
+                    <span>✨</span>
+                </button>
+            </div>
+
+            <!-- Output Column -->
+            <div class="flex flex-col">
+                <div id="output-card" class="output-card flex-grow p-6 rounded-xl border border-gray-200/50 flex items-center justify-center text-center">
+                    <div id="output-content" class="text-gray-500 italic text-lg">
+                        Your perfect, AI-crafted message will appear here...
+                    </div>
+                     <div id="loader" class="hidden">
+                        <div class="loader"></div>
+                        <p class="mt-4 text-gray-600 font-semibold">Brewing up some magic...</p>
+                    </div>
+                </div>
+                 <div class="flex items-center justify-end mt-4 gap-3 relative">
+                     <button id="copy-btn" class="bg-white/80 text-gray-700 font-semibold py-2 px-5 rounded-lg shadow-sm hover:bg-white transition-transform duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                         Copy Text
+                     </button>
+                     <div id="copy-toast" class="copy-toast absolute -top-12 right-0 bg-gray-800 text-white text-sm font-semibold py-2 px-4 rounded-lg shadow-lg">
+                         Copied to clipboard!
+                     </div>
+                 </div>
+            </div>
+        </main>
+
+        <!-- Footer Credit -->
+        <footer class="text-center mt-8">
+            <p class="text-gray-500 text-sm">created by sachin ❤️</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- NO MORE API KEYS OR ACCESS CODES HERE! ---
+
+        // --- Element References ---
+        const vibeSelect = document.getElementById('vibe');
+        const subVibeSelect = document.getElementById('sub-vibe');
+        const dynamicSelect = document.getElementById('dynamic');
+        const languageSelect = document.getElementById('language');
+        const contextInput = document.getElementById('context');
+        const lengthSlider = document.getElementById('length');
+        const lengthValue = document.getElementById('length-value');
+        const intensitySlider = document.getElementById('intensity');
+        const intensityValue = document.getElementById('intensity-value');
+        const generateBtn = document.getElementById('generate-btn');
+        const outputCard = document.getElementById('output-card');
+        const outputContent = document.getElementById('output-content');
+        const loader = document.getElementById('loader');
+        const copyBtn = document.getElementById('copy-btn');
+        const copyToast = document.getElementById('copy-toast');
+
+        // --- Data for Sub-Vibes ---
+        const subVibes = {
+            tareef: ["Cute Praise", "Deep Appreciation", "Flirty Compliment", "Poetic Praise", "Funny Compliment"],
+            gussa: ["Light Annoyance", "Serious Anger", "Dramatic Anger", "Sarcastic Annoyance", "Disappointed"],
+            pyar: ["Cute Confession", "Flirty Message", "Deep Emotional Love", "Romantic Proposal Line", "Playful Love Note"],
+            masti: ["Funny Tease", "Inside Joke Style", "Witty Banter", "Random Funny Thought", "Meme-style joke"],
+            motivational: ["Gentle Push", "Hype-up message", "Inspirational Quote Style", "You Got This!", "Tough Love Motivation"],
+            teasing: ["Playful Jab", "Funny Roast", "Sarcastic Tease", "Affectionate Teasing", "Inside Joke Tease"],
+            sorry: ["Sincere Apology", "Cute 'My Bad'", "Formal Apology", "Regretful Confession", "Let's Make Up"],
+            encouragement: ["Believe in You", "Cheering You On", "For a Tough Day", "Pre-exam Boost", "Keep Going!"],
+            sad: ["Empathetic Response", "Offering Support", "I'm Here For You", "Sending a Virtual Hug", "Acknowledging Pain"],
+            sarcasm: ["Playful Sarcasm", "Witty Remark", "Dry Humor", "Ironic Observation", "Sarcastic Compliment"],
+        };
+        
+        // --- Data for Slider Labels ---
+        const lengthLabels = { 1: 'Short', 2: 'Medium', 3: 'Long' };
+        const intensityLabels = { 1: 'Subtle', 2: 'Normal', 3: 'Extra' };
+
+        // --- Event Listeners ---
+        vibeSelect.addEventListener('change', updateSubVibes);
+        lengthSlider.addEventListener('input', () => updateSliderLabel(lengthSlider, lengthValue, lengthLabels));
+        intensitySlider.addEventListener('input', () => updateSliderLabel(intensitySlider, intensityValue, intensityLabels));
+        generateBtn.addEventListener('click', generateParagraph);
+        copyBtn.addEventListener('click', copyToClipboard);
+
+        // --- Functions ---
+        function updateSubVibes() {
+            const selectedVibe = vibeSelect.value;
+            const options = subVibes[selectedVibe] || [];
+            subVibeSelect.innerHTML = options.map(opt => `<option value="${opt.toLowerCase().replace(/\s+/g, '-')}">${opt}</option>`).join('');
+        }
+
+        function updateSliderLabel(slider, labelElement, labels) {
+            labelElement.textContent = labels[slider.value];
+        }
+
+        async function generateParagraph() {
+            // 1. Get all user inputs
+            const vibe = vibeSelect.options[vibeSelect.selectedIndex].text;
+            const subVibe = subVibeSelect.options[subVibeSelect.selectedIndex].text;
+            const dynamic = dynamicSelect.options[dynamicSelect.selectedIndex].text.split(' ')[2];
+            const language = languageSelect.options[languageSelect.selectedIndex].text.split(' ')[1];
+            const context = contextInput.value.trim();
+            const length = lengthLabels[lengthSlider.value];
+            const intensity = intensityLabels[intensitySlider.value];
+
+            const requestBody = { vibe, subVibe, dynamic, language, context, length, intensity };
+
+            // 2. Show loading state
+            outputContent.classList.add('hidden');
+            loader.classList.remove('hidden');
+            generateBtn.disabled = true;
+            generateBtn.classList.add('opacity-70', 'cursor-not-allowed');
+            copyBtn.disabled = true;
+            
+            // 3. Call our own secure Netlify Function
+            try {
+                const response = await fetch('/.netlify/functions/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `Server error: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                const generatedText = result.text;
+                
+                if (generatedText) {
+                    displayResult(generatedText.trim());
+                } else {
+                    displayResult("Oops! Something went wrong. Couldn't generate a message. Please try again.");
+                }
+
+            } catch (error) {
+                console.error("Error calling Netlify function:", error);
+                displayResult(`Sorry, an error occurred: ${error.message} 😥`);
+            } finally {
+                // 4. Hide loading state
+                loader.classList.add('hidden');
+                generateBtn.disabled = false;
+                generateBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+            }
+        }
+
+        function displayResult(text) {
+             const cleanedText = text.replace(/\*/g, ''); // Double-check and remove any asterisks
+             outputContent.textContent = cleanedText;
+             outputContent.classList.remove('hidden', 'italic', 'text-gray-500');
+             outputContent.classList.add('text-gray-800', 'text-lg', 'md:text-xl');
+             copyBtn.disabled = false;
+        }
+
+        function copyToClipboard() {
+            const textToCopy = outputContent.textContent;
+            if (navigator.clipboard && textToCopy) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    copyToast.classList.add('show');
+                    setTimeout(() => {
+                        copyToast.classList.remove('show');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                    fallbackCopyTextToClipboard(textToCopy);
+                });
+            } else {
+                 fallbackCopyTextToClipboard(textToCopy);
+            }
+        }
+        
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+              document.execCommand('copy');
+              copyToast.classList.add('show');
+              setTimeout(() => copyToast.classList.remove('show'), 2000);
+            } catch (err) {
+              console.error('Fallback: Oops, unable to copy', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // --- Initial Setup ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updateSubVibes.call(this);
+            updateSliderLabel(lengthSlider, lengthValue, lengthLabels);
+            updateSliderLabel(intensitySlider, intensityValue, intensityLabels);
+        });
+
+    </script>
+</body>
+</html>
+
