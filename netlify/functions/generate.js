@@ -61,14 +61,22 @@ Rules: Never use asterisks for emphasis. Use emojis (1-3) naturally. Avoid hasht
     const result = await response.json();
 
     if (!response.ok) {
+      // Return the full API response as a string for the frontend
       console.error("Google AI API Error:", result);
       return {
         statusCode: response.status,
-        body: JSON.stringify({ error: result.error || "Failed to get a response from the AI service." }),
+        body: JSON.stringify({ error: JSON.stringify(result) }),
       };
     }
 
-    const generatedText = result?.candidates?.[0]?.content?.[0]?.text || "No response generated.";
+    // Safely extract the generated text
+    const generatedText = result?.candidates?.[0]?.content?.[0]?.text;
+    if (!generatedText) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ text: "No text was generated. Try again." }),
+      };
+    }
 
     return {
       statusCode: 200,
@@ -79,7 +87,7 @@ Rules: Never use asterisks for emphasis. Use emojis (1-3) naturally. Avoid hasht
     console.error("Error in Netlify function:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "An internal server error occurred." }),
+      body: JSON.stringify({ error: error.message || "An internal server error occurred." }),
     };
   }
 };
